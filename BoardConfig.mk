@@ -42,29 +42,29 @@ BOARD_HAS_LARGE_FILESYSTEM := true
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-#TARGET_RECOVERY_INITRC := device/samsung/hl3g/recovery/recovery.rc
-TARGET_RECOVERY_FSTAB := device/samsung/hl3g/recovery.fstab
+TARGET_RECOVERY_INITRC := device/samsung/hl3g/recovery/recovery.rc
+TARGET_RECOVERY_FSTAB := device/samsung/hl3g/recovery/twrp.fstab
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/hl3g/recovery/recovery_keys.c
 BOARD_UMS_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/exynos-dwc3.0/exynos-ss-udc.0/gadget/lun0/file"
 
 # TWRP Specific
-#RECOVERY_GRAPHICS_USE_LINELENGTH := true
-#DEVICE_RESOLUTION := 720x1280
-#BOARD_HAS_NO_REAL_SDCARD := true
-#RECOVERY_SDCARD_ON_DATA := true
-#TW_INTERNAL_STORAGE_PATH := /data/media
-#TW_INTERNAL_STORAGE_MOUNT_POINT := sdcard
-#TW_EXTERNAL_STORAGE_PATH := /external_sd
-#TW_EXTERNAL_STORAGE_MOUNT_POINT := external_sd
-#TW_NO_USB_STORAGE := true
-#TW_DEFAULT_EXTERNAL_STORAGE := true
-#TW_HAS_DOWNLOAD_MODE := true
-#TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel/brightness"
-#TW_MAX_BRIGHTNESS := 255
-#TW_NO_CPU_TEMP := true
-#TW_NO_REBOOT_BOOTLOADER := true
-#TW_EXCLUDE_SUPERSU := true
+RECOVERY_GRAPHICS_USE_LINELENGTH := true
+DEVICE_RESOLUTION := 720x1280
+BOARD_HAS_NO_REAL_SDCARD := true
+RECOVERY_SDCARD_ON_DATA := true
+TW_INTERNAL_STORAGE_PATH := /data/media
+TW_INTERNAL_STORAGE_MOUNT_POINT := sdcard
+TW_EXTERNAL_STORAGE_PATH := /external_sd
+TW_EXTERNAL_STORAGE_MOUNT_POINT := external_sd
+TW_NO_USB_STORAGE := true
+TW_DEFAULT_EXTERNAL_STORAGE := true
+TW_HAS_DOWNLOAD_MODE := true
+TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel/brightness"
+TW_MAX_BRIGHTNESS := 255
+TW_NO_CPU_TEMP := true
+TW_NO_REBOOT_BOOTLOADER := true
+TW_EXCLUDE_SUPERSU := true
 
 # GPU
 USE_OPENGL_RENDERER := true
