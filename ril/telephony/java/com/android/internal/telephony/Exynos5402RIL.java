@@ -146,7 +146,7 @@ public class Exynos3470RIL extends RIL {
             dc.isMT = (0 != p.readInt());
             dc.als = p.readInt();
             dc.isVoice = (0 != p.readInt());
-            boolean isVideo = (0 != p.readInt());   // Samsung
+            boolean isVideo = (0 != p.readInt());   // Samsung CallDetails
             int call_type = p.readInt();            // Samsung CallDetails
             int call_domain = p.readInt();          // Samsung CallDetails
             String csv = p.readString();            // Samsung CallDetails
@@ -155,7 +155,7 @@ public class Exynos3470RIL extends RIL {
             int np = p.readInt();
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
             dc.name = p.readString();
-            dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
+            dc.namePresentation = p.readInt();
             int uusInfoPresent = p.readInt();
             if (uusInfoPresent == 1) {
                 dc.uusInfo = new UUSInfo();

@@ -9,6 +9,8 @@ $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
 # Inherit device configuration
 $(call inherit-product, device/samsung/hl3g/full_hl3g.mk)
+# Nfc
+$(call inherit-product, vendor/cm/config/nfc_enhanced.mk)
 
 # Override build properties.
 PRODUCT_BUILD_PROP_OVERRIDES += \
