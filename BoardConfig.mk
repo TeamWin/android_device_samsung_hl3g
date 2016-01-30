@@ -10,6 +10,7 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_VARIANT := cortex-a7
 TARGET_CPU_SMP := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
+TARGET_PREFER_32_BIT := true
 
 # Board
 TARGET_BOOTLOADER_BOARD_NAME := hl3g
@@ -19,7 +20,6 @@ TARGET_NO_BOOTLOADER := true
 # Platform
 TARGET_BOARD_PLATFORM := exynos5
 TARGET_SOC := exynos5260
-
 
 # Kernel
 BOARD_KERNEL_CMDLINE := 
@@ -72,6 +72,9 @@ BOARD_EGL_CFG := device/samsung/hl3g/egl/egl.cfg
 BOARD_EGL_WORKAROUND_BUG_10194508 := true
 BOARD_USE_MHEAP_SCREENSHOT := true
 
+# Audio
+BOARD_USES_LIBMEDIA_WITH_AUDIOPARAMETER := true
+
 # Camera
 USE_CAMERA_STUB := true
 
@@ -80,6 +83,38 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd-hl3g
 
 # CMHW
 BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/hl3g/cmhw/
+
+# Radio
+#BOARD_RIL_CLASS := ../../../device/samsung/hl3g/ril
+#BOARD_PROVIDES_LIBRIL := true
+#BOARD_MOBILEDATA_INTERFACE_NAME := "rmnet0"
+
+# Pre-L Compatibility
+COMMON_GLOBAL_CFLAGS += \
+    -DADD_LEGACY_ACQUIRE_BUFFER_SYMBOL \
+    -DENABLE_NON_PIE_SUPPORT
+
+# Legacy MMAP for pre-lollipop blobs
+# (needed by mcDriverDaemon which in turn is needed by cbd)
+BOARD_USES_LEGACY_MMAP := true
+
+# Sensors
+TARGET_NO_SENSOR_PERMISSION_CHECK := true
+
+# WFD
+BOARD_USES_WFD_SERVICE := true
+
+# Wifi
+BOARD_WLAN_DEVICE                := bcmdhd
+BOARD_HAVE_SAMSUNG_WIFI          := true
+BOARD_HOSTAPD_DRIVER             := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_${BOARD_WLAN_DEVICE}
+BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_${BOARD_WLAN_DEVICE}
+WPA_SUPPLICANT_VERSION           := VER_0_8_X
+WIFI_DRIVER_FW_PATH_PARAM        := "/sys/module/dhd/parameters/firmware_path"
+WIFI_DRIVER_FW_PATH_STA          := "/system/etc/wifi/bcmdhd_sta.bin"
+WIFI_DRIVER_FW_PATH_AP           := "/system/etc/wifi/bcmdhd_apsta.bin"
 
 # Bootanimation
 TARGET_SCREEN_WIDTH := 720
@@ -90,3 +125,23 @@ TARGET_BOOTANIMATION_TEXTURE_CACHE := true
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
+
+# SELinux
+BOARD_SEPOLICY_DIRS += \
+   device/samsung/hl3g/sepolicy
+
+BOARD_SEPOLICY_UNION += \
+    file_contexts \
+    service_contexts \
+    device.te \
+    domain.te \
+    drmserver.te \
+    file.te \
+    gpsd.te \
+    init.te \
+    mediaserver.te \
+    servicemanager.te \
+    system_app.te \
+    system_server.te \
+    vold.te \
+    wpa.te

@@ -34,9 +34,52 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/media/media_profiles.xml:system/etc/media_profiles.xml
 
+# Camera
+PRODUCT_PACKAGES += \
+    Snap
+
+# needed by open-source audio-hal
+PRODUCT_PACKAGES += \
+    mixer_paths.xml
+
+# Wifi
+PRODUCT_PACKAGES += \
+    dhcpcd.conf \
+    hostapd \
+    wpa_supplicant
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+    $(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
+    $(LOCAL_PATH)/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
+
 # Radio
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/sbin/cbd:root/sbin/cbd
+
+# RIL
+PRODUCT_PACKAGES += \
+    libsecril-client
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.telephony.ril_class=Exynos5260RIL
+
+# Set default USB interface
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    persist.sys.usb.config=mtp
+
+# USB Accesory
+PRODUCT_PACKAGES += \
+    com.android.future.usb.accessory
+
+# Service mode
+PRODUCT_PACKAGES += \
+    SamsungServiceMode
+
+# Charger
+PRODUCT_PACKAGES += \
+    charger \
+    charger_res_images
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -60,3 +103,16 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.adb.secure=0 \
     ro.secure=0 \
     ro.debuggable=1
+
+# System properties
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.arch=exynos5420 \
+    debug.hwui.render_dirty_regions=false \
+    ro.opengles.version=196608 \
+    ro.zygote.disable_gl_preload=true
+    persist.radio.multisim.config=dsds \
+    ro.kernel.android.checkjni=0 \
+    dalvik.vm.checkjni=false \
+    dalvik.vm.heapstartsize=8m \
+    dalvik.vm.heapgrowthlimit=128m \
+    dalvik.vm.heapsize=512m 

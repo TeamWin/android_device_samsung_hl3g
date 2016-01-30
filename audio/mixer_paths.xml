@@ -1,0 +1,22 @@
+<mixer>
+
+  <!-- Playback paths -->
+
+  <path name="media-speaker">
+  </path>
+
+  <path name="media-headphones">
+  </path>
+
+  <path name="speaker-and-headphones">
+  </path>
+
+  <!-- Capture paths -->
+
+  <path name="media-main-mic">
+  </path>
+
+  <path name="media-second-mic">
+  </path>
+
+</mixer>
