@@ -26,6 +26,17 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.universal5260.usb.rc:root/init.universal5260.usb.rc \
     $(LOCAL_PATH)/rootdir/ueventd.universal5260.rc:root/ueventd.universal5260.rc \
 
+# Audio
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/audio/audio_policy.conf:system/etc/audio_policy.conf
+
+# Media config
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/media/media_profiles.xml:system/etc/media_profiles.xml
+
+# Radio
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/sbin/cbd:root/sbin/cbd
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -44,11 +55,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
 
 
-#ADB
+# ADB
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.adb.secure=0 \
     ro.secure=0 \
     ro.debuggable=1
-
-# Dalvik VM specific for devices with 2048 MB of RAM
-$(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
