@@ -1,3 +1,9 @@
 #
 # system.prop for hl3g
 #
+
+ro.secure=0
+ro.adb.secure=0
+service.adb.root=1
+ro.allow.mock.location=1
+ro.debuggable=1

@@ -1,0 +1,11 @@
+# mount point   fstype      device                   device2
+/efs            ext4        /dev/block/mmcblk0p3                           flags=display="EFS";backup=1
+/boot           emmc        /dev/block/mmcblk0p5                           flags=display="Kernel";backup=1
+/recovery       emmc        /dev/block/mmcblk0p6
+/modem          emmc        /dev/block/mmcblk0p7                           flags=display="Modem";backup=1
+/cache          ext4        /dev/block/mmcblk0p8
+/system         ext4        /dev/block/mmcblk0p9
+/preload        ext4        /dev/block/mmcblk0p10
+/modem2         emmc        /dev/block/mmcblk0p11                          flags=display="Modem2";backup=1
+/data           ext4        /dev/block/mmcblk0p12    length=-16384
+/external_sd    vfat        /dev/block/mmcblk1p1     /dev/block/mmcblk1    flags=display="Micro SD";storage;removable

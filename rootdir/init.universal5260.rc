@@ -1,0 +1,915 @@
+import init.universal5260.usb.rc
+import init.wifi.rc
+
+on init
+#    start watchdogd
+
+# Vibetonz
+    export VIBE_PIPE_PATH /dev/pipes
+    mkdir /dev/pipes 0771 vibe vibe
+    restorecon /dev/pipes
+
+    # See storage config details at http://source.android.com/tech/storage/
+    mkdir /mnt/media_rw/extSdCard 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveA 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveB 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveC 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveD 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveE 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveF 0700 media_rw media_rw
+
+    # See storage config details at http://source.android.com/tech/storage/
+    mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /storage/emulated 0555 root root
+
+    export EXTERNAL_STORAGE /storage/emulated/legacy
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
+
+    # Support legacy paths
+    symlink /storage/emulated/legacy /sdcard
+    symlink /storage/emulated/legacy /mnt/sdcard
+    symlink /storage/emulated/legacy /storage/sdcard0
+    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+
+    # map "real" external storages paths also in same way. backwards compatibility.
+    symlink /storage/extSdCard /mnt/extSdCard
+    symlink /storage/UsbDriveA /mnt/UsbDriveA
+    symlink /storage/UsbDriveB /mnt/UsbDriveB
+    symlink /storage/UsbDriveC /mnt/UsbDriveC
+    symlink /storage/UsbDriveD /mnt/UsbDriveD
+    symlink /storage/UsbDriveE /mnt/UsbDriveE
+    symlink /storage/UsbDriveF /mnt/UsbDriveF
+
+    export SECONDARY_STORAGE /storage/extSdCard
+
+    mkdir /storage/extSdCard 0700 root root
+    mkdir /storage/UsbDriveA 0700 root root
+    mkdir /storage/UsbDriveB 0700 root root
+    mkdir /storage/UsbDriveC 0700 root root
+    mkdir /storage/UsbDriveD 0700 root root
+    mkdir /storage/UsbDriveE 0700 root root
+    mkdir /storage/UsbDriveF 0700 root root
+
+    mkdir /efs 0771 radio system
+    symlink /dev/block/mmcblk0p13 /dev/mbin0
+    restorecon /dev/mbin0
+    symlink  /sys/devices/platform/s5p-ehci/ehci_power /dev/ehci_power
+
+# Vibetonz
+    export VIBE_PIPE_PATH /dev/pipes
+    mkdir /dev/pipes 0771 vibe vibe
+    restorecon /dev/pipes
+
+# Make param link
+    symlink /dev/block/mmcblk0p8 /dev/block/param
+
+on post-fs-data
+   # we will remap this as /mnt/sdcard with the sdcard fuse tool
+    mkdir /data/media 0770 media_rw media_rw
+    chown media_rw media_rw /data/media
+
+    setprop vold.post_fs_data_done 1
+
+    # Added for TZ Playready DRM Support
+    mkdir /efs/drm 0774 drm system
+    mkdir /efs/drm/playready 0775 drm system
+
+    # Multimedia property for Smart View
+    setprop media.enable-commonsource true
+
+# Permissions for bluetooth
+    setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
+    chown bluetooth bluetooth ro.bt.bdaddr_path
+    chown bluetooth bluetooth /dev/ttySAC3
+    chmod 0600 /dev/ttySAC3
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+
+    # For kernel lock in BT/WiFi race condtion
+    chmod 0600 /dev/btlock
+    chown bluetooth bluetooth /dev/btlock
+
+# YAAS(Yamaha Android Audio System) uses.
+    mkdir /data/ymc 0775 system system
+
+on boot
+
+# SSWAP
+    write /proc/sys/vm/swappiness 130
+    write /sys/fs/selinux/enforce 0
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+#    setprop ro.radio.noril yes
+
+    # Reduce reserved lowmem from ~48MB to ~12MB
+    write /proc/sys/vm/lowmem_reserve_ratio "128 128"
+
+    # Set up kernel tracing, but disable it by default
+    chmod 0222 /sys/kernel/debug/tracing/trace_marker
+    write /sys/kernel/debug/tracing/tracing_on 0
+
+# Vibetonz
+    chmod 0660 /dev/tspdrv
+    chown vibe vibe /dev/tspdrv
+    
+# mobicore
+    mkdir /data/app/mcRegistry 0775 system system
+    chmod 0700 /dev/mobicore
+    chmod 0666 /dev/mobicore-user
+    chmod 0660 /dev/s5p-smem    
+    chown system system /dev/mobicore
+    chown radio system /dev/mobicore-user
+    chown system system /dev/s5p-smem       
+
+# DRK permission
+    mkdir /efs/prov 0770 radio system
+    chown radio system /efs/prov_data
+    chmod 0770 /efs/prov_data
+    chown radio system /efs/prov_data/dev_root
+    chmod 0770 /efs/prov_data/dev_root
+    chown radio system /efs/prov_data/knox
+    chmod 0770 /efs/prov_data/knox
+    chown radio system /efs/prov_data/dev_root/dev_root.dat
+    chmod 0640 /efs/prov_data/dev_root/dev_root.dat
+    chown radio system /efs/prov/libdevkm.lock
+    chmod 0660 /efs/prov/libdevkm.lock
+    write /efs/prov/ffffffff00000000000000000000000c.tlbin 0
+    chown radio system /efs/prov/ffffffff00000000000000000000000c.tlbin
+    chmod 0660 /efs/prov/ffffffff00000000000000000000000c.tlbin
+
+# CS socket
+    mkdir /dev/socket/cs_socket 0770 system system
+
+# Permissions for TouchScreen
+    chown system radio /sys/class/sec/tsp/cmd
+    chown system system /sys/class/input/input1/enabled
+    chmod 0660 /sys/class/input/input1/enabled
+
+# Permissions for Touchkey
+    chown system radio /sys/class/sec/sec_touchkey/enable_disable
+    chown system radio /sys/class/sec/sec_touchkey/touchkey_brightness
+    chown system radio /sys/class/sec/sec_touchkey/touchkey_menu
+    chown system radio /sys/class/sec/sec_touchkey/touchkey_back
+    chown system radio /sys/class/sec/sec_touchkey/touch_update
+    chown system radio /sys/class/sec/sec_touchkey/touch_version
+    chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_version_panel
+    chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_version_phone
+    chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_update_status
+    chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_update
+    chown system radio /sys/class/sec/sec_touchkey/touch_sensitivity
+    chown system radio /sys/class/sec/sec_touchkey/touchkey_threshold
+    chown system radio /sys/class/sec/sec_touchkey/glove_mode
+    chown system radio /sys/class/sec/sec_touchkey/flip_mode
+    chown system radio /sys/class/sec/sec_touchkey/boost_level
+    chown system radio /sys/class/sec/sec_touchkey/grip_mode
+    chown system system /sys/devices/virtual/sec/sec_touchkey/brightness
+
+    chown system system /sys/class/input/input8/enabled
+    chmod 0660 /sys/class/input/input8/enabled
+    chown system system /sys/class/input/input9/enabled
+    chmod 0660 /sys/class/input/input9/enabled    
+    chown system system /sys/class/input/input9/enabled
+    chmod 0660 /sys/class/input/input9/enabled
+	chown system system /sys/class/input/input10/enabled
+    chmod 0660 /sys/class/input/input10/enabled
+    chown system system /sys/class/input/input11/enabled
+    chmod 0660 /sys/class/input/input11/enabled
+
+# Vibetonz
+    chmod 0660 /dev/tspdrv
+    chown vibe vibe /dev/tspdrv
+
+# Permissions for gpio_keys
+    chown radio system /sys/class/sec/sec_key/wakeup_keys
+    write /sys/class/sec/sec_key/wakeup_keys 116,172
+
+# Permissions for EPEN
+    chown system radio /sys/class/sec/sec_epen/epen_firm_update
+    chown system radio /sys/class/sec/sec_epen/epen_rotation
+    chown system radio /sys/class/sec/sec_epen/epen_hand
+    chown system radio /sys/class/sec/sec_epen/epen_reset
+    chown system radio /sys/class/sec/sec_epen/epen_reset_result
+    chown system radio /sys/class/sec/sec_epen/epen_checksum
+    chown system radio /sys/class/sec/sec_epen/epen_checksum_result
+    chown system radio /sys/class/sec/sec_epen/epen_saving_mode
+    chown system radio /sys/class/sec/sec_epen/boost_level
+
+    chown system system /sys/class/input/input2/enabled
+    chmod 0660 /sys/class/input/input2/enabled
+
+# Change permission for tracing
+    chown root shell /sys/kernel/debug/tracing/events/cpufreq_interactive_eagle/enable
+    chmod 0664 /sys/kernel/debug/tracing/events/cpufreq_interactive_eagle/enable
+
+# Change permission for interactive governor
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_slack
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_slack
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/target_loads
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/target_loads
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boost
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/cpu_util
+    chmod 0440 /sys/devices/system/cpu/cpufreq/interactive/cpu_util
+
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/timer_rate
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/timer_rate
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/timer_slack
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/timer_slack
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/min_sample_time
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/min_sample_time
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/hispeed_freq
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/hispeed_freq
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/target_loads
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/target_loads
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/go_hispeed_load
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/go_hispeed_load
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/above_hispeed_delay
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/above_hispeed_delay
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/boost
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/boostpulse
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/input_boost
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/input_boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/boostpulse_duration
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/boostpulse_duration
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/io_is_busy
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive_eagle/io_is_busy
+    chown system system /sys/devices/system/cpu/cpufreq/interactive_eagle/cpu_util
+    chmod 0440 /sys/devices/system/cpu/cpufreq/interactive_eagle/cpu_util
+
+    chown system system /sys/kernel/hmp/boost
+    chmod 0660 /sys/kernel/hmp/boost
+    chown system system /sys/kernel/hmp/boostpulse
+    chmod 0660 /sys/kernel/hmp/boostpulse
+    chown system system /sys/kernel/hmp/boostpulse_duration
+    chmod 0660 /sys/kernel/hmp/boostpulse_duration
+    chown system system /sys/kernel/hmp/frequency_invariant_load_scale
+    chmod 0660 /sys/kernel/hmp/frequency_invariant_load_scale
+    chown system system /sys/kernel/hmp/down_threshold
+    chmod 0660 /sys/kernel/hmp/down_threshold
+    chown system system /sys/kernel/hmp/up_threshold
+    chmod 0660 /sys/kernel/hmp/up_threshold
+    chown system system /sys/kernel/hmp/load_avg_period_ms
+    chmod 0660 /sys/kernel/hmp/load_avg_period_ms
+
+# Sensors
+# Accelerometer_sensor
+    chown system radio /sys/class/sensors/accelerometer_sensor/raw_data
+    chown system radio /sys/class/sensors/accelerometer_sensor/calibration
+    chown system radio /sys/class/sensors/accelerometer_sensor/reactive_alert
+    chown system radio /sys/class/sensors/accelerometer_sensor/vendor
+    chown system radio /sys/class/sensors/accelerometer_sensor/name
+    chown system radio /sys/class/sensors/accelerometer_sensor/selftest
+# Proximity_sensor
+    chown system radio /sys/class/sensors/proximity_sensor/state
+    chown system radio /sys/class/sensors/proximity_sensor/raw_data
+    chown system radio /sys/class/sensors/proximity_sensor/prox_avg
+    chown system radio /sys/class/sensors/proximity_sensor/prox_cal
+    chown system radio /sys/class/sensors/proximity_sensor/prox_thresh
+    chown system radio /sys/class/sensors/proximity_sensor/thresh_high
+    chown system radio /sys/class/sensors/proximity_sensor/thresh_low
+    chown system radio /sys/class/sensors/proximity_sensor/vendor
+    chown system radio /sys/class/sensors/proximity_sensor/name
+# Light_sensor
+    chown system radio /sys/class/sensors/light_sensor/lux
+    chown system radio /sys/class/sensors/light_sensor/raw_data
+    chown system radio /sys/class/sensors/light_sensor/vendor
+    chown system radio /sys/class/sensors/light_sensor/name
+# Gyro_sensor
+    chown system radio /sys/class/sensors/gyro_sensor/power_on
+    chown system radio /sys/class/sensors/gyro_sensor/power_off
+    chown system radio /sys/class/sensors/gyro_sensor/temperature
+    chown system radio /sys/class/sensors/gyro_sensor/selftest
+    chown system radio /sys/class/sensors/gyro_sensor/selftest_dps
+    chown system radio /sys/class/sensors/gyro_sensor/vendor
+    chown system radio /sys/class/sensors/gyro_sensor/name
+# Magnetic_sensor
+    chown system radio /dev/akm09911
+    chown system radio /sys/class/sensors/magnetic_sensor/raw_data
+    chown system radio /sys/class/sensors/magnetic_sensor/vendor
+    chown system radio /sys/class/sensors/magnetic_sensor/name
+
+# CPU Idle
+    chown system radio /sys/devices/system/cpu/cpu0/cpuidle/state2/disable
+    chown system radio /sys/module/cpuidle/parameters/enable_mask
+
+# MPL IIO
+# folders
+    chown system system /sys/bus/iio/devices/iio:device0/
+    chmod 700           /sys/bus/iio/devices/iio:device0/
+    chown system radio /sys/bus/iio/devices/iio:device0/buffer
+    chmod 700           /sys/bus/iio/devices/iio:device0/buffer
+    chown system radio /sys/bus/iio/devices/iio:device0/scan_elements
+    chmod 700           /sys/bus/iio/devices/iio:device0/scan_elements
+    chown system radio /sys/bus/iio/devices/iio:device0/trigger
+    chmod 700           /sys/bus/iio/devices/iio:device0/trigger
+    chown system radio /sys/bus/iio/devices/iio:device0/power
+    chmod 700           /sys/bus/iio/devices/iio:device0/power
+# files
+    chown system radio /dev/iio:device0
+    chmod 660           /dev/iio:device0
+    chown system radio /sys/bus/iio/devices/iio:device0/uevent
+    chmod 660           /sys/bus/iio/devices/iio:device0/uevent
+    chown system radio /sys/bus/iio/devices/iio:device0/dev
+    chmod 660           /sys/bus/iio/devices/iio:device0/dev
+    chown system radio /sys/bus/iio/devices/iio:device0/buffer/length
+    chmod 660           /sys/bus/iio/devices/iio:device0/buffer/length
+    chown system radio /sys/bus/iio/devices/iio:device0/buffer/enable
+    chmod 660           /sys/bus/iio/devices/iio:device0/buffer/enable
+    chown system radio /sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_en
+    chmod 660           /sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_en
+    chown system radio /sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_type
+    chmod 660           /sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_type
+    chown system radio /sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_index
+    chmod 660           /sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_index
+    chown system radio /sys/bus/iio/devices/iio:device0/sampling_frequency_available
+    chmod 660           /sys/bus/iio/devices/iio:device0/sampling_frequency_available
+    chown system radio /sys/bus/iio/devices/iio:device0/reg_dump
+    chmod 660           /sys/bus/iio/devices/iio:device0/reg_dump
+    chown system radio /sys/bus/iio/devices/iio:device0/temperature
+    chmod 660           /sys/bus/iio/devices/iio:device0/temperature
+    chown system radio /sys/bus/iio/devices/iio:device0/master_enable
+    chmod 660           /sys/bus/iio/devices/iio:device0/master_enable
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_scale
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_scale
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_x_calibbias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_x_calibbias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_y_calibbias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_y_calibbias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_z_calibbias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_z_calibbias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_x_offset
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_x_offset
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_y_offset
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_y_offset
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_z_offset
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_z_offset
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_self_test_scale
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_self_test_scale
+    chown system radio /sys/bus/iio/devices/iio:device0/self_test_samples
+    chmod 660           /sys/bus/iio/devices/iio:device0/self_test_samples
+    chown system radio /sys/bus/iio/devices/iio:device0/self_test_threshold
+    chmod 660           /sys/bus/iio/devices/iio:device0/self_test_threshold
+    chown system radio /sys/bus/iio/devices/iio:device0/gyro_enable
+    chmod 660           /sys/bus/iio/devices/iio:device0/gyro_enable
+    chown system radio /sys/bus/iio/devices/iio:device0/gyro_fifo_enable
+    chmod 660           /sys/bus/iio/devices/iio:device0/gyro_fifo_enable
+    chown system radio /sys/bus/iio/devices/iio:device0/gyro_rate
+    chmod 660           /sys/bus/iio/devices/iio:device0/gyro_rate
+    chown system radio /sys/bus/iio/devices/iio:device0/power_state
+    chmod 660           /sys/bus/iio/devices/iio:device0/power_state
+    chown system radio /sys/bus/iio/devices/iio:device0/sampling_frequency
+    chmod 660           /sys/bus/iio/devices/iio:device0/sampling_frequency
+    chown system radio /sys/bus/iio/devices/iio:device0/self_test
+    chmod 660           /sys/bus/iio/devices/iio:device0/self_test
+    chown system radio /sys/bus/iio/devices/iio:device0/gyro_matrix
+    chmod 660           /sys/bus/iio/devices/iio:device0/gyro_matrix
+    chown system radio /sys/bus/iio/devices/iio:device0/secondary_name
+    chmod 660           /sys/bus/iio/devices/iio:device0/secondary_name
+    chown system radio /sys/bus/iio/devices/iio:device0/event_accel_motion
+    chmod 660           /sys/bus/iio/devices/iio:device0/event_accel_motion
+    chown system radio /sys/bus/iio/devices/iio:device0/event_smd
+    chmod 660           /sys/bus/iio/devices/iio:device0/event_smd
+    chown system radio /sys/bus/iio/devices/iio:device0/event_pedometer
+    chmod 660           /sys/bus/iio/devices/iio:device0/event_pedometer
+    chown system radio /sys/bus/iio/devices/iio:device0/flush_batch
+    chmod 660           /sys/bus/iio/devices/iio:device0/flush_batch
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_scale
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_scale
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_x_calibbias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_x_calibbias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_y_calibbias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_y_calibbias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_z_calibbias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_z_calibbias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_self_test_scale
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_self_test_scale
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_x_offset
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_x_offset
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_y_offset
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_y_offset
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_z_offset
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_z_offset
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_x_dmp_bias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_x_dmp_bias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_y_dmp_bias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_y_dmp_bias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_accel_z_dmp_bias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_accel_z_dmp_bias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_x_dmp_bias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_x_dmp_bias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_y_dmp_bias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_y_dmp_bias
+    chown system radio /sys/bus/iio/devices/iio:device0/in_anglvel_z_dmp_bias
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_anglvel_z_dmp_bias
+    chown system radio /sys/bus/iio/devices/iio:device0/pedometer_int_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/pedometer_int_on
+    chown system radio /sys/bus/iio/devices/iio:device0/pedometer_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/pedometer_on
+    chown system radio /sys/bus/iio/devices/iio:device0/pedometer_steps
+    chmod 660           /sys/bus/iio/devices/iio:device0/pedometer_steps
+    chown system radio /sys/bus/iio/devices/iio:device0/pedometer_time
+    chmod 660           /sys/bus/iio/devices/iio:device0/pedometer_time
+    chown system radio /sys/bus/iio/devices/iio:device0/pedometer_counter
+    chmod 660           /sys/bus/iio/devices/iio:device0/pedometer_counter
+    chown system radio /sys/bus/iio/devices/iio:device0/pedometer_step_thresh
+    chmod 660           /sys/bus/iio/devices/iio:device0/pedometer_step_thresh
+    chown system radio /sys/bus/iio/devices/iio:device0/pedometer_int_thresh
+    chmod 660           /sys/bus/iio/devices/iio:device0/pedometer_int_thresh
+    chown system radio /sys/bus/iio/devices/iio:device0/smd_enable
+    chmod 660           /sys/bus/iio/devices/iio:device0/smd_enable
+    chown system radio /sys/bus/iio/devices/iio:device0/smd_threshold
+    chmod 660           /sys/bus/iio/devices/iio:device0/smd_threshold
+    chown system radio /sys/bus/iio/devices/iio:device0/smd_delay_threshold
+    chmod 660           /sys/bus/iio/devices/iio:device0/smd_delay_threshold
+    chown system radio /sys/bus/iio/devices/iio:device0/smd_delay_threshold2
+    chmod 660           /sys/bus/iio/devices/iio:device0/smd_delay_threshold2
+    chown system radio /sys/bus/iio/devices/iio:device0/dmp_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/dmp_on
+    chown system radio /sys/bus/iio/devices/iio:device0/dmp_int_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/dmp_int_on
+    chown system radio /sys/bus/iio/devices/iio:device0/dmp_event_int_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/dmp_event_int_on
+    chown system radio /sys/bus/iio/devices/iio:device0/step_indicator_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/step_indicator_on
+    chown system radio /sys/bus/iio/devices/iio:device0/batchmode_timeout
+    chmod 660           /sys/bus/iio/devices/iio:device0/batchmode_timeout
+    chown system radio /sys/bus/iio/devices/iio:device0/batchmode_wake_fifo_full_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/batchmode_wake_fifo_full_on
+    chown system radio /sys/bus/iio/devices/iio:device0/six_axes_q_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/six_axes_q_on
+    chown system radio /sys/bus/iio/devices/iio:device0/six_axes_q_rate
+    chmod 660           /sys/bus/iio/devices/iio:device0/six_axes_q_rate
+    chown system radio /sys/bus/iio/devices/iio:device0/three_axes_q_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/three_axes_q_on
+    chown system radio /sys/bus/iio/devices/iio:device0/three_axes_q_rate
+    chmod 660           /sys/bus/iio/devices/iio:device0/three_axes_q_rate
+    chown system radio /sys/bus/iio/devices/iio:device0/ped_q_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/ped_q_on
+    chown system radio /sys/bus/iio/devices/iio:device0/ped_q_rate
+    chmod 660           /sys/bus/iio/devices/iio:device0/ped_q_rate
+    chown system radio /sys/bus/iio/devices/iio:device0/step_detector_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/step_detector_on
+    chown system radio /sys/bus/iio/devices/iio:device0/accel_enable
+    chmod 660           /sys/bus/iio/devices/iio:device0/accel_enable
+    chown system radio /sys/bus/iio/devices/iio:device0/accel_fifo_enable
+    chmod 660           /sys/bus/iio/devices/iio:device0/accel_fifo_enable
+    chown system radio /sys/bus/iio/devices/iio:device0/accel_rate
+    chmod 660           /sys/bus/iio/devices/iio:device0/accel_rate
+    chown system radio /sys/bus/iio/devices/iio:device0/firmware_loaded
+    chmod 660           /sys/bus/iio/devices/iio:device0/firmware_loaded
+    chown system radio /sys/bus/iio/devices/iio:device0/accel_matrix
+    chmod 660           /sys/bus/iio/devices/iio:device0/accel_matrix
+    chown system radio /sys/bus/iio/devices/iio:device0/motion_lpa_on
+    chmod 660           /sys/bus/iio/devices/iio:device0/motion_lpa_on
+    chown system radio /sys/bus/iio/devices/iio:device0/motion_lpa_freq
+    chmod 660           /sys/bus/iio/devices/iio:device0/motion_lpa_freq
+    chown system radio /sys/bus/iio/devices/iio:device0/motion_lpa_threshold
+    chmod 660           /sys/bus/iio/devices/iio:device0/motion_lpa_threshold
+    chown system radio /sys/bus/iio/devices/iio:device0/in_magn_scale
+    chmod 660           /sys/bus/iio/devices/iio:device0/in_magn_scale
+    chown system radio /sys/bus/iio/devices/iio:device0/compass_enable
+    chmod 660           /sys/bus/iio/devices/iio:device0/compass_enable
+    chown system radio /sys/bus/iio/devices/iio:device0/compass_rate
+    chmod 660           /sys/bus/iio/devices/iio:device0/compass_rate
+    chown system radio /sys/bus/iio/devices/iio:device0/compass_matrix
+    chmod 660           /sys/bus/iio/devices/iio:device0/compass_matrix
+    chown system radio /sys/bus/iio/devices/iio:device0/name
+    chmod 660           /sys/bus/iio/devices/iio:device0/name
+    chown system radio /sys/bus/iio/devices/iio:device0/trigger/current_trigger
+    chmod 660           /sys/bus/iio/devices/iio:device0/trigger/current_trigger
+    chown system radio /sys/bus/iio/devices/iio:device0/power/runtime_status
+    chmod 660           /sys/bus/iio/devices/iio:device0/power/runtime_status
+    chown system radio /sys/bus/iio/devices/iio:device0/power/control
+    chmod 660           /sys/bus/iio/devices/iio:device0/power/control
+    chown system radio /sys/bus/iio/devices/iio:device0/power/runtime_suspended_time
+    chmod 660           /sys/bus/iio/devices/iio:device0/power/runtime_suspended_time
+    chown system radio /sys/bus/iio/devices/iio:device0/power/runtime_active_time
+    chmod 660           /sys/bus/iio/devices/iio:device0/power/runtime_active_time
+    chown system radio /sys/bus/iio/devices/iio:device0/power/autosuspend_delay_ms
+    chmod 660           /sys/bus/iio/devices/iio:device0/power/autosuspend_delay_ms
+    chown system radio /sys/bus/iio/devices/iio:device0/dmp_firmware
+    chmod 660           /sys/bus/iio/devices/iio:device0/dmp_firmware
+    chown system radio /sys/bus/iio/devices/iio:device0/six_axes_q_value
+    chmod 660           /sys/bus/iio/devices/iio:device0/six_axes_q_value
+
+# MHL factory test
+    chown system radio /sys/class/mhl/mhl_on
+
+###############################################################################
+# System LSI
+# Comment : add permission to device driver
+
+# NFC : Permissions for NFC
+    chmod 0660 /dev/sec-nfc
+# NFC : change owner
+    chown nfc nfc /dev/sec-nfc
+# NFC : create data/nfc for nv storage
+    mkdir /data/nfc 0700 nfc nfc
+    mkdir /data/nfc/param 0700 nfc nfc
+
+# Set up nfc test option
+    setprop snfc.test.fwdownload 2
+    setprop snfc.test.power      sec
+    setprop snfc.test.tag        sec
+###############################################################################
+
+# Switch Device
+    chown system system /sys/class/sec/switch/force_otgboost
+
+# OTG_TEST
+    chown system radio /sys/class/host_notify/usb_otg/booster
+    chmod 0660 /sys/class/host_notify/usb_otg/booster
+
+# GPIO DVS
+    chown radio system /sys/class/secgpio_check/secgpio_check_all/gpioinit_check
+    chown radio system /sys/class/secgpio_check/secgpio_check_all/gpiosleep_check
+    chown radio system /sys/class/secgpio_check/secgpio_check_all/checked_sleepGPIO
+
+# PMS DVFS
+    chown radio system /sys/power/cpufreq_table
+    chown radio system /sys/power/cpufreq_max_limit
+    chown radio system /sys/power/cpufreq_min_limit
+    chown radio system /sys/power/enable_dm_hotplug
+    chmod 0664 /sys/power/cpufreq_table
+    chmod 0664 /sys/power/cpufreq_max_limit
+    chmod 0664 /sys/power/cpufreq_min_limit
+    chmod 0664 /sys/power/enable_dm_hotplug
+    chown radio system /sys/class/devfreq/exynos5-busfreq-mif/en_monitoring
+    chown radio system /sys/class/devfreq/exynos5-busfreq-int/en_monitoring
+    chmod 0664 /sys/class/devfreq/exynos5-busfreq-mif/en_monitoring
+    chmod 0664 /sys/class/devfreq/exynos5-busfreq-int/en_monitoring
+    chown radio system /sys/class/devfreq/exynos5-busfreq-mif/freq_table
+    chown radio system /sys/class/devfreq/exynos5-busfreq-int/freq_table
+    chown radio system /sys/class/devfreq/exynos5-busfreq-mif/min_freq
+    chown radio system /sys/class/devfreq/exynos5-busfreq-int/min_freq
+    chown radio system /sys/class/devfreq/exynos5-busfreq-mif/max_freq
+    chown radio system /sys/class/devfreq/exynos5-busfreq-int/max_freq
+    chown radio system /sys/devices/platform/mali.0/dvfs_table
+    chown radio system /sys/devices/platform/mali.0/dvfs_min_lock
+    chown radio system /sys/devices/platform/mali.0/dvfs_max_lock
+    chown radio system /sys/class/thermal/thermal_zone0/boost_mode
+    chmod 664 /sys/class/devfreq/exynos5-busfreq-mif/freq_table
+    chmod 664 /sys/class/devfreq/exynos5-busfreq-int/freq_table
+    chmod 664 /sys/class/devfreq/exynos5-busfreq-mif/min_freq
+    chmod 664 /sys/class/devfreq/exynos5-busfreq-int/min_freq
+    chmod 664 /sys/class/devfreq/exynos5-busfreq-mif/max_freq
+    chmod 664 /sys/class/devfreq/exynos5-busfreq-int/max_freq
+    chmod 664 /sys/devices/platform/mali.0/dvfs_table
+    chmod 664 /sys/devices/platform/mali.0/dvfs_min_lock
+    chmod 664 /sys/devices/platform/mali.0/dvfs_max_lock
+    chmod 664 /sys/class/thermal/thermal_zone0/boost_mode
+
+on fs
+    mount_all /fstab.universal5260
+    setprop ro.crypto.fuse_sdcard true
+
+#For Absolute Persistence Partition 
+    mkdir /persdata 0755 system system 
+    mkdir /persdata/absolute 0750 system system 
+      
+    wait /dev/block/platform/dw_mmc.0/by-name/PERSDATA 
+    check_fs /dev/block/platform/dw_mmc.0/by-name/PERSDATA ext4 
+    mount ext4 /dev/block/platform/dw_mmc.0/by-name/PERSDATA /persdata/absolute nosuid nodev barrier=1 
+      
+    chown system system /persdata 
+    chmod 0755 /persdata 
+    chown system system /persdata/absolute 
+    chmod 0750 /persdata/absolute
+
+# Permission for EFS
+    chown radio system /efs
+    chmod 0771 /efs
+
+    chown radio radio /sys/devices/virtual/misc/multipdp/waketime
+    chmod 0660 /sys/devices/virtual/misc/umts_dm0/dm_state
+    chown radio system /sys/devices/virtual/misc/umts_dm0/dm_state
+
+# Permissions for backlight
+    chown system system /sys/class/backlight/panel/brightness
+    chown system system /sys/class/backlight/panel/auto_brightness
+
+# Permissions for LCD
+    chown system radio /sys/class/lcd/panel/lcd_type
+    chown system system /sys/class/lcd/panel/power_reduce
+    chown system system /sys/class/lcd/panel/siop_enable
+    chown system system /sys/class/lcd/panel/temperature
+
+# Audio (Earjack)
+    chown system radio /sys/class/audio/earjack/select_jack
+    chown system radio /sys/class/audio/earjack/key_state
+    chown system radio /sys/class/audio/earjack/state
+
+# create data/gps for GPS daemon
+    chown root system /dev/ttySAC0
+    chmod 0660 /dev/ttySAC0
+    chown root system /sys/class/sec/gps/GPS_PWR_EN/value
+    chmod 0664 /sys/class/sec/gps/GPS_PWR_EN/value
+
+# make sure data_system dir and perms are properly set.
+    mkdir /data/system 0771 system system
+    chown system system /data/system
+    mkdir /data/system/gps 0771 system system
+    chown system system /data/system/gps
+
+# delete gps Factory file
+    rm /data/gps_started
+    rm /data/glonass_started
+    rm /data/beidou_started
+    rm /data/smd_started
+    rm /data/sv_cno.info
+
+# IR_LED
+    chown system radio /sys/class/sec/sec_ir/ir_send
+    chown system radio /sys/class/sec/sec_ir/ir_send_result
+
+# Permissions Camera
+    chown system radio /sys/class/camera/rear/rear_camfw
+    chown system radio /sys/class/camera/rear/rear_camtype
+    chown system radio /sys/class/camera/flash/rear_flash
+#    chown system radio /sys/class/camera/rear/isp_core
+    chown system radio /sys/class/camera/front/front_camfw
+    chown system radio /sys/class/camera/front/front_camtype
+
+# SVC LED
+    chown system system /sys/class/sec/led/led_r
+    chown system system /sys/class/sec/led/led_g
+    chown system system /sys/class/sec/led/led_b
+
+    chown system system /sys/class/leds/led_r/brightness
+    chown system system /sys/class/leds/led_g/brightness
+    chown system system /sys/class/leds/led_b/brightness
+    chown system system /sys/class/leds/led_r/delay_on
+    chown system system /sys/class/leds/led_g/delay_on
+    chown system system /sys/class/leds/led_b/delay_on
+    chown system system /sys/class/leds/led_r/delay_off
+    chown system system /sys/class/leds/led_g/delay_off
+    chown system system /sys/class/leds/led_b/delay_off
+    chown system system /sys/class/leds/led_r/blink
+    chown system system /sys/class/leds/led_g/blink
+    chown system system /sys/class/leds/led_b/blink
+
+    chown system system /sys/class/sec/led/led_pattern
+    chown system system /sys/class/sec/led/led_blink
+    chown system system /sys/class/sec/led/led_br_lev
+    chown system system /sys/class/sec/led/led_lowpower
+
+# Permissions for backlight
+    chown system system /sys/class/backlight/panel/brightness
+    chown system system /sys/class/backlight/panel/auto_brightness
+
+# Permissions for LCD
+    chown system radio /sys/class/lcd/panel/lcd_type
+    chown system system /sys/class/lcd/panel/power_reduce
+    chown system system /sys/class/lcd/panel/siop_enable
+    chown system system /sys/class/lcd/panel/temperature
+
+# for datarouter
+    chown system system /dev/dun
+    chown system system /dev/ttyGS0
+    chown system system /dev/ttyGS1
+    chown system system /dev/ttyGS2
+    chown system system /dev/ttyGS3
+
+# MTP permission
+    chmod 0660 /dev/usb_mtp_gadget
+    chown system mtp /dev/usb_mtp_gadget
+
+# virtual sdcard daemon running as media_rw (1023)
+service sdcard /system/bin/sdcard -u 1023 -g 1023 -l -r /data/media /mnt/shell/emulated
+    class late_start
+    oneshot
+
+service fuse_extSdCard /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d -f /mnt/media_rw/extSdCard /storage/extSdCard
+    class late_start
+    disabled
+    oneshot
+
+service fuse_UsbDriveA /system/bin/sdcard -u 1023 -g 1023 -d -f /mnt/media_rw/UsbDriveA /storage/UsbDriveA
+    class late_start
+    disabled
+    oneshot
+
+service fuse_UsbDriveB /system/bin/sdcard -u 1023 -g 1023 -d -f /mnt/media_rw/UsbDriveB /storage/UsbDriveB
+    class late_start
+    disabled
+    oneshot
+
+service fuse_UsbDriveC /system/bin/sdcard -u 1023 -g 1023 -d -f /mnt/media_rw/UsbDriveC /storage/UsbDriveC
+    class late_start
+    disabled
+    oneshot
+
+service fuse_UsbDriveD /system/bin/sdcard -u 1023 -g 1023 -d -f /mnt/media_rw/UsbDriveD /storage/UsbDriveD
+    class late_start
+    disabled
+    oneshot
+
+service fuse_UsbDriveE /system/bin/sdcard -u 1023 -g 1023 -d -f /mnt/media_rw/UsbDriveE /storage/UsbDriveE
+    class late_start
+    disabled
+    oneshot
+
+service fuse_UsbDriveF /system/bin/sdcard -u 1023 -g 1023 -d -f /mnt/media_rw/UsbDriveF /storage/UsbDriveF
+    class late_start
+    disabled
+    oneshot
+
+service cpboot-daemon /sbin/cbd -d -txmm626x -bh -mh -p 13
+    class main
+    user root
+    group radio cache inet misc audio sdcard_rw log sdcard_r shell
+    seclabel u:r:cbd:s0
+
+# Set watchdog timer to 30 seconds and pet it every 10 seconds to get a 20 second margin
+#service watchdogd /sbin/watchdogd 10 20
+#    class core
+
+# GPS
+service gpsd /system/bin/gpsd -c /system/etc/gps.xml
+    class main
+    user gps
+    group system inet net_raw
+    ioprio be 0
+
+# Vibetonz
+service immvibed /system/bin/immvibed
+    class core
+    user vibe
+    group vibe
+    oneshot
+
+# on userdebug and eng builds, enable kgdb on the serial console
+on property:ro.debuggable=1
+    write /sys/module/kgdboc/parameters/kgdboc ttyFIQ1
+    write /sys/module/fiq_debugger/parameters/kgdb_enable 1
+
+# Vibetonz
+service immvibed /system/bin/immvibed
+    class core
+    user vibe
+    group vibe
+    oneshot
+
+service mobex-daemon /system/bin/npsmobex
+    class main
+    user system
+    group system radio inet sdcard_rw shell
+
+# service for TZPR provisioning version check app
+service scranton_RD /system/bin/scranton_RD
+     class main
+     user root
+     disabled
+     oneshot
+
+# start for TZPR provisioning version check app
+on property:sys.mobicoredaemon.enable=true
+    start scranton_RD
+
+# MobiCore startup
+service mobicore /system/bin/mcDriverDaemon -r /system/app/FFFFFFFF000000000000000000000001.drbin -r /system/app/mcRegistry/ffffffffd0000000000000000000000a.tlbin
+    class core
+    user system
+    group system
+
+# Secure Storage startup
+service secure_storage /system/bin/secure_storage_daemon
+    class core
+    user system
+    group system
+    disabled
+
+on property:ro.securestorage.support=true
+    mkdir /dev/.secure_storage
+    chmod 0711 /dev/.secure_storage
+    chown system system /dev/.secure_storage
+    restorecon -R /dev/.secure_storage
+    start secure_storage
+
+# CS service
+service cs_service /system/bin/cs
+    class main
+    user system
+    group system
+    disabled
+
+on property:sys.mobicoredaemon.enable=true
+    start cs_service
+
+# Bluetooth LE 2 wired Test
+service LE_dut_cmd_on /system/bin/bttestintf enable
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service LE_dut_cmd_off /system/bin/bttestintf disable
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service bttestdaemon /system/bin/bttestd
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+# Bluetooth dhcpcd config
+service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
+    class main
+	disabled
+	oneshot
+
+service iprenew_bt-pan /system/bin/dhcpcd -n
+    class late_start
+	disabled
+	oneshot
+	
+# SSWAP
+service swapon /sbin/sswap -s
+    class core
+    user root
+    group root
+    seclabel u:r:sswap:s0
+    oneshot
+
+# LPM
+on property:ro.bootmode=charger
+    mount ext4 /dev/block/mmcblk0p18 /system wait ro
+
+on property:ro.bootmode=charger
+    class_start sec-charger
+
+service playlpm /system/bin/lpm
+    class sec-charger
+    user root
+# SecEDS
+service TvoutService_C /system/bin/bintvoutservice
+     class main
+     user system
+     group graphics
+on property:ro.SecEDS.enable=false
+    stop TvoutService_C
+
+#Knox VPN
+service ipruleset /system/bin/ipruleset
+    class main
+    group vpn net_admin inet net_raw
+    disabled
+    oneshot
+
+service sdumpstate /system/bin/dumpstate -P
+    class main
+    disabled
+    oneshot
+#RIL
+service DR-daemon /system/bin/ddexe
+    class main
+    user root
+    group system radio inet net_raw
+
+service KIES-daemon /system/bin/kiesexe
+    class main
+    user root
+    group system radio inet net_raw
+
+service SMD-daemon /system/bin/smdexe
+    class main
+    user root
+    group system radio inet net_raw
+
+service DTT-daemon /system/bin/dttexe
+    class main
+    user root
+    group system radio inet net_raw
+
+service BCS-daemon /system/bin/connfwexe
+    class main
+    user root
+    group system radio inet net_raw
+
+# Modem Logging daemon
+service ML-daemon /system/bin/mlexe
+    class main
+    user root
+    group system radio inet net_raw
+
