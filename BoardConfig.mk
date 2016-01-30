@@ -1,10 +1,8 @@
-USE_CAMERA_STUB := true
+# Assert
+TARGET_OTA_ASSERT_DEVICE := hl3g
 
-# inherit from the proprietary version
--include vendor/samsung/hl3g/BoardConfigVendor.mk
-
+# Architecture
 TARGET_ARCH := arm
-TARGET_NO_BOOTLOADER := true
 TARGET_BOARD_PLATFORM := universal5260
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
@@ -13,10 +11,15 @@ TARGET_CPU_VARIANT := cortex-a7
 TARGET_CPU_SMP := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
 
+# Board
 TARGET_BOOTLOADER_BOARD_NAME := hl3g
+TARGET_NO_RADIOIMAGE := true
+TARGET_NO_BOOTLOADER := true
 
-# For low memory targets only (~512MB RAM & hdpi resolution)
-TARGET_ARCH_LOWMEM := true
+# Platform
+TARGET_BOARD_PLATFORM := exynos5
+TARGET_SOC := exynos5260
+
 
 # Kernel
 BOARD_KERNEL_CMDLINE := 
@@ -24,8 +27,9 @@ BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
 TARGET_KERNEL_SOURCE := kernel/samsung/hl3g
 TARGET_KERNEL_CONFIG := cyanogenmod-exynos5260-hlltexx_00_defconfig
+TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.8
 
-# fix this up by examining /proc/mtd on a running device
+# Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 8388608
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 8388608
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2401239040
@@ -36,7 +40,7 @@ BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_HAS_LARGE_FILESYSTEM := true
 
-#Recovery
+# Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 #TARGET_RECOVERY_INITRC := device/samsung/hl3g/recovery/recovery.rc
@@ -62,3 +66,28 @@ TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/exynos-dwc3.0/exynos-s
 #TW_NO_CPU_TEMP := true
 #TW_NO_REBOOT_BOOTLOADER := true
 #TW_EXCLUDE_SUPERSU := true
+
+# GPU
+USE_OPENGL_RENDERER := true
+BOARD_EGL_CFG := device/samsung/hl3g/egl/egl.cfg
+BOARD_EGL_WORKAROUND_BUG_10194508 := true
+BOARD_USE_MHEAP_SCREENSHOT := true
+
+# Camera
+USE_CAMERA_STUB := true
+
+# healthd
+BOARD_HAL_STATIC_LIBRARIES := libhealthd-hl3g
+
+# CMHW
+BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/hl3g/cmhw/
+
+# Bootanimation
+TARGET_SCREEN_WIDTH := 720
+TARGET_SCREEN_HEIGHT := 1280
+TARGET_BOOTANIMATION_PRELOAD := true
+TARGET_BOOTANIMATION_TEXTURE_CACHE := true
+
+# Charger
+BOARD_CHARGER_ENABLE_SUSPEND := true
+BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
