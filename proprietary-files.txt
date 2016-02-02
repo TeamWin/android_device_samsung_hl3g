@@ -16,35 +16,37 @@ etc/gps.conf
 etc/gps.xml
 etc/init.sec.boot.sh
 etc/plmn_se13.bin
-etc/sec_s3fwrn5_rfreg.bin
 etc/srm.bin
 etc/wifi/bcmdhd_apsta.bin
 etc/wifi/bcmdhd_sta.bin
 etc/wifi/nvram_net.txt
 
+# vendor
+vendor/firmware/bcm4335_V0105.0540.hcd
+
 # MobiCore
 app/FFFFFFFF000000000000000000000001.drbin
 app/mcRegistry/00060308060501020000000000000000.tlbin
 app/mcRegistry/02010000080300030000000000000000.tlbin
-app/mcRegistry/03010000080300030000000000000000.tlbin
 app/mcRegistry/07010000000000000000000000000000.tlbin
 app/mcRegistry/07060000000000000000000000000000.tlbin
+app/mcRegistry/ffffffff000000000000000000000003.tlbin
 app/mcRegistry/ffffffff000000000000000000000004.tlbin
 app/mcRegistry/ffffffff000000000000000000000005.tlbin
+app/mcRegistry/ffffffff000000000000000000000007.tlbin
+app/mcRegistry/ffffffff000000000000000000000008.tlbin
 app/mcRegistry/ffffffff000000000000000000000009.tlbin
 app/mcRegistry/ffffffff00000000000000000000000a.tlbin
 app/mcRegistry/ffffffff00000000000000000000000c.tlbin
 app/mcRegistry/ffffffff00000000000000000000000d.tlbin
-app/mcRegistry/ffffffff00000000000000000000000e.tlbin
 app/mcRegistry/ffffffff00000000000000000000000f.tlbin
+app/mcRegistry/ffffffff000000000000000000000010.tlbin
 app/mcRegistry/ffffffff000000000000000000000012.tlbin
 app/mcRegistry/ffffffff000000000000000000000013.tlbin
-app/mcRegistry/ffffffff000000000000000000000017.tlbin
-app/mcRegistry/ffffffff000000000000000000000018.tlbin
 app/mcRegistry/ffffffffd00000000000000000000004.tlbin
 app/mcRegistry/ffffffffd0000000000000000000000a.tlbin
-app/mcRegistry/ffffffffd0000000000000000000000e.tlbin
 app/mcRegistry/fffffffff0000000000000000000001e.tlbin
+
 
 # Egl
 lib/egl/libGLES_android.so
@@ -112,10 +114,10 @@ lib/libion_exynos.so
 lib/libinvensense_hal.so
 lib/libhwjpeg.so
 lib/libhwcutilsmodule.so
-lib/lib/libhwcutils.so
-lib/lib/libhdmimodule.so
-lib/lib/libhdmi.so
-lib/lib/libhdcp2.so
+lib/libhwcutils.so
+lib/libhdmimodule.so
+lib/libhdmi.so
+lib/libhdcp2.so
 lib/libgdmcprov.so
 lib/libfimg.so
 lib/libfactoryutil.so
