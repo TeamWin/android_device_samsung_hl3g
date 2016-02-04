@@ -1,3 +1,9 @@
+# inherit from common smdk3470
+-include device/samsung/smdk5260-common/BoardConfigCommon.mk
+
+# inherit from the proprietary version
+-include vendor/samsung/hl3g/BoardConfigVendor.mk
+
 # Assert
 TARGET_OTA_ASSERT_DEVICE := hl3g
 
@@ -83,7 +89,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd-hl3g
 BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/hl3g/cmhw/
 
 # Radio
-#BOARD_RIL_CLASS := ../../../device/samsung/hl3g/ril
+BOARD_RIL_CLASS := ../../../device/samsung/hl3g/ril
 #BOARD_PROVIDES_LIBRIL := true
 BOARD_MOBILEDATA_INTERFACE_NAME := "rmnet0"
 
