@@ -2,6 +2,7 @@
 # system.prop for hl3g
 #
 
+ro.arch=exynos5420
 ro.secure=0
 ro.adb.secure=0
 service.adb.root=1

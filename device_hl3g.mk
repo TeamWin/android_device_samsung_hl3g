@@ -119,7 +119,6 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 
 # System properties
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.arch=exynos5420 \
     debug.hwui.render_dirty_regions=false \
     ro.opengles.version=196608 \
     ro.zygote.disable_gl_preload=true
