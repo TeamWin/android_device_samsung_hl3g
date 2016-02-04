@@ -7,4 +7,4 @@
 /system         ext4        /dev/block/mmcblk0p18
 /preload        ext4        /dev/block/mmcblk0p20
 /data           ext4        /dev/block/mmcblk0p21    length=-16384
-/external_sd    vfat        /dev/block/mmcblk1p1               flags=display="Micro SDcard";storage;wipeingui;removable
+/external_sd    vfat        /dev/block/mmcblk1p1     /dev/block/mmcblk1p1          flags=display="Micro SDcard";storage;wipeingui;removable
