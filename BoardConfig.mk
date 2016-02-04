@@ -22,12 +22,12 @@ BOARD_KERNEL_CMDLINE :=
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_KERNEL_PAGESIZE := 2048
 TARGET_KERNEL_SOURCE := kernel/samsung/hl3g
-TARGET_KERNEL_CONFIG := recovery_exynos5260-hl3gxx_00_defconfig
+TARGET_KERNEL_CONFIG := cyanogenmod-exynos5260-hl3gxx_00_defconfig
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.8
 
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 8388608
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 8388608
+#BOARD_RECOVERYIMAGE_PARTITION_SIZE := 8388608
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2401239040
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 12629049344
 BOARD_CACHEIMAGE_PARTITION_SIZE := 209715200
@@ -40,7 +40,7 @@ BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 #TARGET_RECOVERY_INITRC := device/samsung/hl3g/recovery/recovery.rc
-TARGET_RECOVERY_FSTAB := device/samsung/hl3g/recovery/twrp.fstab
+TARGET_RECOVERY_FSTAB := device/samsung/hl3g/recovery/recovery.fstab
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_SUPPRESS_EMMC_WIPE := true
 #BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/hl3g/recovery/recovery_keys.c
@@ -48,22 +48,21 @@ BOARD_UMS_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/exynos-dwc3.0/exynos-ss-udc.0/gadget/lun0/file"
 BOARD_USES_MMCUTILS := true
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
-#BOARD_RECOVERY_SWIPE := true
+BOARD_RECOVERY_SWIPE := true
 
 # TWRP Specific
-DEVICE_RESOLUTION := 720x1280
-BOARD_HAS_NO_REAL_SDCARD := true
-RECOVERY_SDCARD_ON_DATA := true
-TW_INTERNAL_STORAGE_PATH := /data/media
-TW_INTERNAL_STORAGE_MOUNT_POINT := sdcard
-TW_EXTERNAL_STORAGE_PATH := /external_sd
-TW_EXTERNAL_STORAGE_MOUNT_POINT := external_sd
-TW_HAS_DOWNLOAD_MODE := true
-TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel/brightness"
-TW_MAX_BRIGHTNESS := 255
-TW_NO_CPU_TEMP := true
-TW_NO_REBOOT_BOOTLOADER := true
-TW_EXCLUDE_SUPERSU := true
+#DEVICE_RESOLUTION := 720x1280
+#BOARD_HAS_NO_REAL_SDCARD := true
+#TW_INTERNAL_STORAGE_PATH := "/data/media/0"
+#TW_INTERNAL_STORAGE_MOUNT_POINT := "data"
+#TW_EXTERNAL_STORAGE_PATH := "/external_sd"
+#TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
+#TW_HAS_DOWNLOAD_MODE := true
+#TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel/brightness"
+#TW_MAX_BRIGHTNESS := 255
+#TW_NO_CPU_TEMP := true
+#TW_NO_REBOOT_BOOTLOADER := true
+#TW_EXCLUDE_SUPERSU := true
 
 # GPU
 USE_OPENGL_RENDERER := true
@@ -86,7 +85,7 @@ BOARD_HARDWARE_CLASS := hardware/samsung/cmhw/ device/samsung/hl3g/cmhw/
 # Radio
 #BOARD_RIL_CLASS := ../../../device/samsung/hl3g/ril
 #BOARD_PROVIDES_LIBRIL := true
-#BOARD_MOBILEDATA_INTERFACE_NAME := "rmnet0"
+BOARD_MOBILEDATA_INTERFACE_NAME := "rmnet0"
 
 # Pre-L Compatibility
 COMMON_GLOBAL_CFLAGS += \
@@ -124,23 +123,3 @@ TARGET_BOOTANIMATION_TEXTURE_CACHE := true
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
-
-# SELinux
-BOARD_SEPOLICY_DIRS += \
-   device/samsung/hl3g/sepolicy
-
-BOARD_SEPOLICY_UNION += \
-    file_contexts \
-    service_contexts \
-    device.te \
-    domain.te \
-    drmserver.te \
-    file.te \
-    gpsd.te \
-    init.te \
-    mediaserver.te \
-    servicemanager.te \
-    system_app.te \
-    system_server.te \
-    vold.te \
-    wpa.te
