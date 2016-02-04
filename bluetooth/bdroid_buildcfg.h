@@ -17,8 +17,6 @@
 #ifndef _BDROID_BUILDCFG_H
 #define _BDROID_BUILDCFG_H
 
-// Commented out for variant support 
-// when null the product model is used
-// #define BTM_DEF_LOCAL_NAME   "SM-N750"
+#define BTM_DEF_LOCAL_NAME   "SM-N750"
 
 #endif
