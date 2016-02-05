@@ -12,7 +12,6 @@ bin/smdexe
 bin/wlandutservice
 
 # Etc
-etc/gps.conf
 etc/gps.xml
 etc/init.sec.boot.sh
 etc/plmn_se13.bin
@@ -20,9 +19,6 @@ etc/srm.bin
 etc/wifi/bcmdhd_apsta.bin
 etc/wifi/bcmdhd_sta.bin
 etc/wifi/nvram_net.txt
-
-# vendor
-vendor/firmware/bcm4335_V0105.0540.hcd
 
 # MobiCore
 app/FFFFFFFF000000000000000000000001.drbin
@@ -50,7 +46,6 @@ app/mcRegistry/fffffffff0000000000000000000001e.tlbin
 
 # Egl
 lib/egl/libGLES_android.so
-vendor/lib/egl/libGLES_mali.so
 
 # Hw
 lib/hw/audio.primary.universal5260.so
@@ -61,6 +56,8 @@ lib/hw/nfc_nci.universal5260.so
 lib/hw/sensors.universal5260.so
 lib/hw/hwcomposer.exynos5.so
 lib/hw/keystore.exynos5.so
+lib/hw/memtrack.exynos5.so
+lib/hw/power.exynos5.so
 
 # Battery
 media/wireless_left.spi
@@ -89,6 +86,10 @@ vendor/lib/libwvm.so
 vendor/lib/libwvdrm_L1.so
 vendor/lib/libWVStreamControlAPI_L1.so
 vendor/lib/mediadrm/libwvdrmengine.so
+vendor/lib/libmalicore.bc
+vendor/lib/egl/libGLES_mali.so
+vendor/lib/libRSDriverArm.so
+vendor/firmware/bcm4335_V0105.0540.hcd
 
 # Lib
 lib/libwrappergps.so
