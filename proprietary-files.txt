@@ -139,3 +139,5 @@ lib/libMcClient.so
 lib/libExynosOMX_Resourcemanager.so
 lib/libExynosOMX_Core.so
 lib/libExynosHWCService.so
+lib/libexynosscaler.so
+lib/libymc_codecctrl.so
