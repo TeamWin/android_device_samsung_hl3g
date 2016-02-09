@@ -1,6 +1,3 @@
-# inherit from common smdk3470
--include device/samsung/smdk5260-common/BoardConfigCommon.mk
-
 # inherit from the proprietary version
 -include vendor/samsung/hl3g/BoardConfigVendor.mk
 
@@ -9,7 +6,7 @@ TARGET_OTA_ASSERT_DEVICE := hl3g
 
 # Architecture
 TARGET_ARCH := arm
-TARGET_BOARD_PLATFORM := universal5260
+TARGET_BOARD_PLATFORM := exynos5
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
