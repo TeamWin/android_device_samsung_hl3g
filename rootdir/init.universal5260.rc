@@ -98,6 +98,7 @@ on boot
 
 # SSWAP
     write /proc/sys/vm/swappiness 130
+    write /sys/fs/selinux/enforce 0
 
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 #    setprop ro.radio.noril yes
