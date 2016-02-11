@@ -120,9 +120,9 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 
 # System properties
 PRODUCT_PROPERTY_OVERRIDES += \
+    ro.kernel.android.checkjni=0 \
     ro.opengles.version=196608 \
     ro.zygote.disable_gl_preload=true
-    persist.radio.multisim.config=dsds \
     ro.kernel.android.checkjni=0 \
     dalvik.vm.checkjni=false \
     dalvik.vm.heapstartsize=8m \
