@@ -141,3 +141,4 @@ lib/libExynosOMX_Core.so
 lib/libExynosHWCService.so
 lib/libexynosscaler.so
 lib/libymc_codecctrl.so
+lib/libion.so
