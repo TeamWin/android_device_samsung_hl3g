@@ -17,6 +17,7 @@ TARGET_PREFER_32_BIT := true
 
 # Board
 TARGET_BOOTLOADER_BOARD_NAME := hl3g
+TARGET_BOARD_PLATFORM_GPU := mali-T624
 TARGET_NO_RADIOIMAGE := true
 TARGET_NO_BOOTLOADER := true
 
@@ -46,7 +47,6 @@ TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 TARGET_RECOVERY_FSTAB := device/samsung/hl3g/recovery/recovery.fstab
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_SUPPRESS_EMMC_WIPE := true
-#BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/hl3g/recovery/recovery_keys.c
 BOARD_UMS_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/exynos-dwc3.0/exynos-ss-udc.0/gadget/lun0/file"
 BOARD_USES_MMCUTILS := true
