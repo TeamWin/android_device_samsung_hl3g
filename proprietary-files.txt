@@ -143,3 +143,5 @@ lib/libexynosscaler.so
 lib/libymc_codecctrl.so
 lib/libion.so
 lib/libexynosgscaler.so
+lib/libvdis.so
+lib/libymc_config.so
