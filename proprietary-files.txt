@@ -43,10 +43,6 @@ app/mcRegistry/ffffffffd00000000000000000000004.tlbin
 app/mcRegistry/ffffffffd0000000000000000000000a.tlbin
 app/mcRegistry/fffffffff0000000000000000000001e.tlbin
 
-
-# Egl
-lib/egl/libGLES_android.so
-
 # Hw
 lib/hw/audio.primary.universal5260.so
 lib/hw/camera.universal5260.so
