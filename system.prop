@@ -8,6 +8,3 @@ ro.adb.secure=0
 service.adb.root=1
 ro.allow.mock.location=1
 ro.debuggable=1
-
-ro.ril.hsxpa=1
-ro.ril.gprsclass=10
