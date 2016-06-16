@@ -1,4 +1,4 @@
-# Device configuration for Sasmung Galaxy Note 3 Neo SM-N750 (hl3g)
+# Device configuration for Samsung Galaxy Note 3 Neo SM-N750 (hl3g)
 
 ## Spec Sheet
 
